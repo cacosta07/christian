@@ -25,6 +25,7 @@ water = 25
 hunger = 50
 thirst = 50
 game_time = 0
+print(Style.RESET_ALL)
 print(Fore.RED)
 write("A zombie apocalypse has broken out...")
 time.sleep(.6 * txt_sleep)
@@ -40,6 +41,7 @@ drinktypes = ["Water","Water","Water","Water","Milk","Smoothie","Dr. Pepper","Pe
 def check(typed):
     global game_time
     global player_position
+    global horde_position
     global hunger
     global thirst
     if typed == "p":
@@ -50,22 +52,29 @@ def check(typed):
         menu()
     elif typed == "a":
         game_time += 1
-        player_position += random.randint(160,240)
-        hunger -= random.randint(2,10)
-        thirst -= random.randint(5,8)
+        mvmt = random.randint(160,240)
+        write("You have run ",mvmt," meters.\n")
+        player_position += mvmt
+        hunger -= random.randint(6,10)
+        thirst -= random.randint(8,12)
+        horde_position += 100
         gamecheck()
         menu()
     elif typed == "s":
         game_time += 1
-        hunger -= random.randint(1,6)
-        thirst -= random.randint(2,4)
-        player_position += random.randint(80,120)
+        hunger -= random.randint(1,4)
+        thirst -= random.randint(2,6)
+        mvmt = random.randint(80,120)
+        horde_position += 100
+        write("You have walked ",mvmt," meters.\n")
+        player_position += mvmt
         gamecheck()
         menu()
     else:
         menu()
 
 def statcheck(typed):
+    print
     global food
     global water
     global hunger
@@ -74,6 +83,7 @@ def statcheck(typed):
     if typed == "p":
         os.system('cls')
         write("Quitting...")
+        exit()
     elif typed == "q":
         menu()
     elif typed == "d":
@@ -108,15 +118,24 @@ def gamecheck():
     if hunger <= 0:
         health -= random.randint(5,15)
         hunger = 0
+        write(Back.WHITE + "\nYou are dying of hunger! Eat some food to bring your hunger level up.")
+        print(Style.RESET_ALL)
     if thirst <= 0:
         health -= random.randint(5,15)
         thirst = 0
+        write(Back.WHITE + "\nYou are dying of thirst! Drink something to bring your thirst level up.")
+        print(Style.RESET_ALL)
     if health <= 0:
         health = 0
-        write("you die")
+        write(Back.RED + "you die")
+        exit()
+
+def event():
+    if random.randint(0,15) == 15:
+        print(Fore.RED +"event")
 
 def status():
-    print(Fore.RED)
+    print(Fore.BLUE)
     print("\n\n\n┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ Status ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅")
 
     write("\nHealth: ", health," %")
