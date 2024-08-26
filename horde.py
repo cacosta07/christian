@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import random
+from colorama import Fore, Back, Style
 
 txt_sleep = .05
 
@@ -24,7 +25,7 @@ water = 25
 hunger = 50
 thirst = 50
 game_time = 0
-
+print(Fore.RED)
 write("A zombie apocalypse has broken out...")
 time.sleep(.6 * txt_sleep)
 write(" oooooooooooo...")
@@ -35,10 +36,12 @@ time.sleep(.6 * txt_sleep)
 ("Your goal is to make it 4km away from the starting position, to reach a military base. A horde of zombies are following you, be quick.\n\n")
 
 foodtypes = ["Canned peaches","MRE","Tomato Soup","Canned Chicken","Canned Peas","Fresh apple","Chicken nuggets","Grilled cheese","Salad","a Burrito","a Rock","Rice","Pizza slice","Old Sandwich","Spam","a Bag of chips","Pie slice","Cardboard","Canned tuna"]
-drinktypes = ["Water","Water","Water","Water","Milk","Smoothie"]
+drinktypes = ["Water","Water","Water","Water","Milk","Smoothie","Dr. Pepper","Pepsi","Coca-Cola","Coffee","Orange juice"]
 def check(typed):
     global game_time
     global player_position
+    global hunger
+    global thirst
     if typed == "p":
         os.system('cls')
         write("Quitting...")
@@ -47,14 +50,20 @@ def check(typed):
         menu()
     elif typed == "a":
         game_time += 1
-        player_position += random.randint(80,120)
+        player_position += random.randint(160,240)
+        hunger -= random.randint(2,10)
+        thirst -= random.randint(5,8)
+        gamecheck()
         menu()
     elif typed == "s":
         game_time += 1
-        player_position += random.randint(25,45)
+        hunger -= random.randint(1,6)
+        thirst -= random.randint(2,4)
+        player_position += random.randint(80,120)
+        gamecheck()
         menu()
     else:
-        check(str.lower(input("Input error, please try again: ")))
+        menu()
 
 def statcheck(typed):
     global food
@@ -71,22 +80,43 @@ def statcheck(typed):
         statcheck(str.lower(input("Input: ")))
     elif typed == "f":
         if food > 0:
-            food += random.randint(5,15)
-            write("You have eaten ", random.choice(foodtypes),"\n")
+            if hunger <= 85:
+                hunger += random.randint(5,15)
+                write("You have eaten ", random.choice(foodtypes),"\n")
+            else:
+                write("You are not hungry enough.")
         else:
             write("You have nothing to eat.\n")
-        statcheck(str.lower(input("Input: ")))
+        statcheck(str.lower(input("\nInput: ")))
     elif typed == "g":
         if water > 0:
-            water += random.randint(5,15)
-            write("You have drank ", random.choice(drinktypes),"\n")
+            if thirst <= 85:
+                thirst += random.randint(5,15)
+                write("You have drank ", random.choice(drinktypes),"\n")
+            else:
+                write("You are not thirsty enough.")
         else:
             write("You have nothing to drink.\n")
-        statcheck(str.lower(input("Input: ")))
+        statcheck(str.lower(input("\nInput: ")))
     else:
-        statcheck(str.lower(input("Input error, please try again: ")))
+        status()
+
+def gamecheck():
+    global hunger
+    global thirst
+    global health
+    if hunger <= 0:
+        health -= random.randint(5,15)
+        hunger = 0
+    if thirst <= 0:
+        health -= random.randint(5,15)
+        thirst = 0
+    if health <= 0:
+        health = 0
+        write("you die")
 
 def status():
+    print(Fore.RED)
     print("\n\n\n┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ Status ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅")
 
     write("\nHealth: ", health," %")
@@ -108,6 +138,7 @@ def status():
     statcheck(str.lower(input("Input: ")))
 
 def menu():
+    print(Fore.GREEN)
     print("\n\n\n════════════════ Menu ════════════════")
 
     write("\nHour: ", game_time)
@@ -123,5 +154,7 @@ def menu():
 
     print("══════════════════════════════════════\n")
     check(str.lower(input("Input: ")))
+
+
 
 menu()
