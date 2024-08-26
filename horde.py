@@ -4,24 +4,26 @@ import time
 import random
 from colorama import Fore, Back, Style
 
-txt_sleep = .05
+txt_sleep = 0
 
 def write(*args):
     for arg in args:
         for char in str(arg):
             sys.stdout.write(str(char))
             sys.stdout.flush()
-            time.sleep(.025 * txt_sleep)
+            time.sleep(.02 * txt_sleep)
 
 ### vars
+
+print("\n\n\n\n\n\n\n\n\n\n\n")
 
 dist_to_travel = 4000
 player_position = 0
 horde_position = -100
 health = 100
-sleep = 0
-food = 25
-water = 25
+alertness = 100
+food = 10
+water = 10
 hunger = 50
 thirst = 50
 game_time = 0
@@ -44,13 +46,11 @@ def check(typed):
     global horde_position
     global hunger
     global thirst
-    if typed == "p":
-        os.system('cls')
-        write("Quitting...")
-    elif typed == "q":
-        status()
-        menu()
-    elif typed == "a":
+    global alertness
+    global food
+    global water
+
+    if typed == "a":
         game_time += 1
         mvmt = random.randint(160,240)
         write("You have run ",mvmt," meters.\n")
@@ -60,7 +60,7 @@ def check(typed):
         horde_position += 100
         gamecheck()
         menu()
-    elif typed == "s":
+    if typed == "s":
         game_time += 1
         hunger -= random.randint(1,4)
         thirst -= random.randint(2,6)
@@ -70,46 +70,36 @@ def check(typed):
         player_position += mvmt
         gamecheck()
         menu()
-    else:
-        menu()
-
-def statcheck(typed):
-    print
-    global food
-    global water
-    global hunger
-    global thirst
-    global sleep
     if typed == "p":
         os.system('cls')
         write("Quitting...")
         exit()
-    elif typed == "q":
-        menu()
-    elif typed == "d":
-        statcheck(str.lower(input("Input: ")))
-    elif typed == "f":
+    if typed == "d":
+        check(str.lower(input("Input: ")))
+    if typed == "f":
         if food > 0:
             if hunger <= 85:
                 hunger += random.randint(5,15)
+                food -= 1
                 write("You have eaten ", random.choice(foodtypes),"\n")
             else:
                 write("You are not hungry enough.")
         else:
             write("You have nothing to eat.\n")
-        statcheck(str.lower(input("\nInput: ")))
-    elif typed == "g":
+        check(str.lower(input("\nInput: ")))
+    if typed == "g":
         if water > 0:
             if thirst <= 85:
                 thirst += random.randint(5,15)
+                water -= 1
                 write("You have drank ", random.choice(drinktypes),"\n")
             else:
                 write("You are not thirsty enough.")
         else:
             write("You have nothing to drink.\n")
-        statcheck(str.lower(input("\nInput: ")))
+        check(str.lower(input("\nInput: ")))
     else:
-        status()
+        menu()
 
 def gamecheck():
     global hunger
@@ -134,46 +124,40 @@ def event():
     if random.randint(0,15) == 15:
         print(Fore.RED +"event")
 
-def status():
-    print(Fore.BLUE)
-    print("\n\n\n┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ Status ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅")
 
-    write("\nHealth: ", health," %")
-    write("\n\nFood left: ", food," food")
-    write("\nWater left: ", water," water")
-    write("\n\nTiredness: ", sleep," %")
-    write("\nHunger: ", hunger," %")
-    write("\nThirst: ", thirst," %")
-
-    print("\n\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈")
-
-    write("Q = Menu\n")
-    write("D = Rest\n")
-    write("F = Eat\n")
-    write("G = Drink\n")
-    write("P to Quit\n")
-
-    print("┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅\n")
-    statcheck(str.lower(input("Input: ")))
 
 def menu():
+    print("\n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
     print(Fore.GREEN)
-    print("\n\n\n════════════════ Menu ════════════════")
+    print("\n\n\n\n\n\n\n═══════════════ Watch ════════════════")
 
-    write("\nHour: ", game_time)
-    write("\nDistance left: ", dist_to_travel - player_position, "m")
-    write("\nHorde distance: ", player_position - horde_position, "m")
+    print("Hour: ", game_time)
+    print("Distance left: ", dist_to_travel - player_position, "m")
+    print("Horde distance: ", player_position - horde_position, "m", end="")
+
+    print("══════════════════════════════════════")
+
+    print(Fore.BLUE)
+    print("\n┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅ Status ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅")
+
+    print("Health: ", health," %")
+    print("\nFood left: ", food," food")
+    print("Water left: ", water," water")
+    print("\nAlertness: ", alertness," %")
+    print("Hunger: ", hunger," %")
+    print("Thirst: ", thirst," %")
 
     print("\n\n┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉┉")
 
-    write("Q = Status\n")
-    write("A = Run\n")
-    write("S = Walk\n")
-    write("P to Quit\n")
+    print("A = Run")
+    print("S = Walk\n")
+    print("D = Rest")
+    print("F = Eat")
+    print("G = Drink\n")
+    print("Enter to refresh")
+    print("P to Quit")
 
-    print("══════════════════════════════════════\n")
+    print("┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅\n")
     check(str.lower(input("Input: ")))
-
-
 
 menu()
