@@ -146,7 +146,7 @@ def gamecheck():
     global health
     global alertness
 
-    if (player_position - horde_position <= 50) and not (player_position - horde_position <= 0):
+    if (alertness <= 25) and not (alertness <= 0):
         write(Back.WHITE + "\nYou start to hear the horde approach closer... maybe it is time to run.")
         print(Style.RESET_ALL + Fore.YELLOW)
 
@@ -172,20 +172,24 @@ def gamecheck():
             "\nYou fall unconsious where you are and wake up 4 hours later. You are now ",alertness, "% alert.")
         print(Style.RESET_ALL + Fore.YELLOW)
 
-    if alertness >= 80:
-        health += 5
-
-    if health > 100:
-        health = 100
+    if (player_position - horde_position <= 50) and not (player_position - horde_position <= 0):
+        write(Back.WHITE + "\nYou start to hear the horde approach closer... maybe it is time to run.")
+        print(Style.RESET_ALL + Fore.YELLOW)
 
     if player_position - horde_position <= 0:
         health -= 45
         write(Style.RESET_ALL + Back.RED + "\nTHE HORDE IS HERE, you have lost 45 health. Move ",abs(player_position - (horde_position+100))," meters or die.")
         print(Style.RESET_ALL + Fore.YELLOW)
-        if player_position - horde_position >= 200:
+        if abs(player_position - (horde_position+100)) >= 220:
             health = 0
             write(Back.RED + Fore.BLACK + "\nTHE HORDE IS HERE, you couldnt escape.")
             print(Style.RESET_ALL)
+
+    if alertness >= 80:
+        health += 5
+
+    if health > 100:
+        health = 100
 
     if health <= 0:
         health = 0
@@ -210,11 +214,11 @@ def gamecheck():
         time.sleep(2 * txt_sleep)
         write(Fore.LIGHTGREEN_EX + "\nThe gate opens and military personell walk out and pull you in. They see the horde coming, but its no match against the military.")
         write("You have sucessfully walked 5 kilometers without dying! Its time to take a good long nap...")
-        write("It took you ",game_time," hours.\n")
-        write("The horde was ",player_position - horde_position," meters away.")
+        write("\nIt took you ",game_time," hours.")
+        write("\nThe horde was ",player_position - horde_position," meters away.")
         instant(Style.RESET_ALL)
         exit()
-    if random.randint(1, 12) == 12:
+    if random.randint(1, 12) == random.randint(1, 12):
         event()
 
 def explore():
@@ -245,7 +249,7 @@ def explore():
     pluswater = round((random.uniform(0,20) * exploretime)/10)
     horde_position += horde_advance * exploretime
     alertness -= random.randint(3,6) * exploretime
-    write("You have found ",plusfood," food, and ",pluswater," water.\n")
+    write("You have found ",plusfood," food, and ",pluswater," drinks.\n")
     write("The horde has advanced by ",horde_advance * exploretime," meters.\n")
     write("You are ",alertness,"% alert after searching for ",exploretime," hour(s).\n\n")
     food += plusfood
@@ -309,10 +313,10 @@ def event():
             write("The horde has travelled backwards by 150 meters.")
             horde_position -= 150
         if event == "trade":
-            write("A man hiding in a hole calls out to you, he desperately needs food- and is willing to trade his drinks.")
-            if str.lower(input("Give him a food? y/n ")) == "y":
+            write("A man hiding in a hole calls out to you, he desperately needs food- and is willing to trade his drinks.\n")
+            if str.lower(input("Give him food? y/n ")) == "y":
                 if food >= 1:
-                    write("The man thanks you and hands you two drinks in turn for one of your food items. He thanks you and you carry on.")
+                    write("The man thanks you and hands you two drinks in turn for one of your food items. He gives a smile and you carry on.")
                     food -= 1
                     water += 2
                 else:
@@ -330,6 +334,7 @@ def tips():
     write("Every hour, the horde moves around 100 meters.\n")
     write("Resting will always take 2 hours.\n")
     write("Falling unconsious from being too tired is extremely dangerous.\n")
+    write("Walking is half as fast, but far over twice as efficient.\n")
     write("You get thirsty faster than you get hungry, but water is easier to find.\n")
     write("Random events can be good or bad, hope that you get one of the good ones.\n")
     write("Almost everything takes away a small amount of alertness.\n")
