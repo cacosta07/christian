@@ -134,6 +134,7 @@ def check(typed):
         else:
             write("You have nothing to drink.\n")
     if typed == "":
+        instant("Refreshing...\n")
         menu()
     check(str.lower(input("Input: ")))
 
@@ -147,7 +148,7 @@ def gamecheck():
     global alertness
 
     if (alertness <= 25) and not (alertness <= 0):
-        write(Back.WHITE + "\nYou start to hear the horde approach closer... maybe it is time to run.")
+        write(Back.WHITE + "\nYou are getting really tired, sleeping when you get the chance would be smart.")
         print(Style.RESET_ALL + Fore.YELLOW)
 
     if hunger <= 0:
