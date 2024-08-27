@@ -327,7 +327,7 @@ def event():
 
         print("\n\n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         print(Style.RESET_ALL + Fore.YELLOW)
-    gamecheck()
+        gamecheck()
 
 def tips():
     print(Fore.WHITE + "\n════════════════════ Tips ════════════════════\n")
