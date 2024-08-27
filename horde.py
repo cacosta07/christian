@@ -176,7 +176,7 @@ def gamecheck():
         write(Back.WHITE + "\nYou start to hear the horde approach closer... maybe it is time to run.")
         print(Style.RESET_ALL + Fore.YELLOW)
 
-    if (player_position - horde_position <= 0) and not (player_position - horde_position <= 50):
+    if (player_position - horde_position <= 0):
         health -= 45
         write(Style.RESET_ALL + Back.RED + "\nTHE HORDE IS HERE, you have lost 45 health. Move ",abs(player_position - (horde_position+100))," meters or die.")
         print(Style.RESET_ALL + Fore.YELLOW)
