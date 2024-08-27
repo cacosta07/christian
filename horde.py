@@ -238,7 +238,7 @@ def explore():
                 "\nThe horde will arrive at your position if you choose to explore for ",exploretime," hours. Choose 0 hours to stop exploring."
             )
             print(Style.RESET_ALL + Fore.YELLOW)
-            exploretime = round(int(input("\nHow many hours do you want to explore for?\n")))
+            exploretime = abs(round(float(input("\nHow many hours do you want to explore for?\n"))))
     except:
         write("Input was not a valid number... exiting to menu.\n")
         menu()
