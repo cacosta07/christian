@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pygame.examples
 
-quality = 6 #0-6
+quality = 3 #0-6
 
 def init_screen_and_clock():
     global screen, display, clock, WINDOW_SIZE
@@ -62,7 +62,7 @@ def ballphys():
         yvel = yvel * (-1*((score/10)+1))
         print('BOING')
         score += 1
-        xvel += pygame.mouse.get_rel()[0]/.2
+        xvel += pygame.mouse.get_rel()[0]/quality/3
     if ballpos[0] < 20 or ballpos[0] > WINDOW_SIZE[0]-20:
         xvel = xvel * -1
     if ballpos[1] < 20:
