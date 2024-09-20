@@ -1,0 +1,115 @@
+import pygame
+import random
+import math
+import numpy as np
+import pygame.examples
+
+quality = 6 #0-6
+
+def init_screen_and_clock():
+    global screen, display, clock, WINDOW_SIZE
+    pygame.init()
+    WINDOW_SIZE = (750, 950)
+    pygame.display.set_caption('Game')
+    screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32)
+    clock = pygame.time.Clock()
+
+
+def create_fonts(font_sizes_list):
+    "Creates different fonts with one list"
+    fonts = []
+    for size in font_sizes_list:
+        fonts.append(
+            pygame.font.SysFont("Arial", size))
+    return fonts
+
+
+def render(fnt, what, color, where):
+    "Renders the fonts as passed from display_fps"
+    text_to_show = fnt.render(what, 0, pygame.Color(color))
+    screen.blit(text_to_show, where)
+
+
+def display_fps():
+    "Data that will be rendered and blitted in _display"
+    render(
+        fonts[1],
+        what=str(int(clock.get_fps())),
+        color="white",
+        where=(0, 0))
+    
+
+def display_score():
+    render(
+        fonts[0],
+        what=str(score),
+        color="#00ff00",
+        where=(WINDOW_SIZE[0]/2, 0)
+    )
+
+
+ballpos = [40,40]
+xvel = 5
+yvel = 8
+def ballphys():
+    global ballpos
+    global score
+    global xvel
+    global yvel
+    ballpos[0] += xvel/quality
+    ballpos[1] += yvel/quality
+    if ballpos[0] > pygame.mouse.get_pos()[0]-60 and ballpos[0] < pygame.mouse.get_pos()[0]+60 and ballpos[1] > WINDOW_SIZE[1]-(60+(yvel/quality)) and ballpos[1] < WINDOW_SIZE[1]-15:
+        yvel = yvel * (-1*((score/10)+1))
+        print('BOING')
+        score += 1
+        xvel += pygame.mouse.get_rel()[0]/2
+    if ballpos[0] < 20 or ballpos[0] > WINDOW_SIZE[0]-20:
+        xvel = xvel * -1
+    if ballpos[1] < 20:
+        yvel = yvel * -1
+    if ballpos[1] > WINDOW_SIZE[1]:
+        score = 0
+        ballpos = [40,40]
+        xvel = 5
+        yvel = 8
+
+    
+
+
+init_screen_and_clock()
+# This create different font size in one line
+fonts = create_fonts([24, 16, 14, 8])
+pygame.mouse.set_visible(False)
+score = 0
+
+
+loop = 1
+while loop:
+    mouseRel = 0,0
+    position = 0,0
+    mouseRel = pygame.mouse.get_rel()
+    mousePosition = pygame.mouse.get_pos()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            loop = 0
+        if event.type == pygame.MOUSEMOTION:
+            print(mouseRel)
+
+    screen.fill((0, 0, 0))
+    display_fps()
+    display_score()
+
+    ballphys()
+
+    position = mousePosition[0], 500
+    pygame.draw.rect(screen, "#aaff00", pygame.Rect(np.clip(position[0]-60,20,WINDOW_SIZE[0]-140),WINDOW_SIZE[1]-40,120,20))
+    pygame.draw.circle(screen, "#bbbbbb", mousePosition, abs(sum(mouseRel)/10)+2)
+
+    pygame.draw.circle(screen, "#dd00dd", ballpos, 20)
+    
+    pygame.display.flip()
+    clock.tick(60*quality)
+    
+
+pygame.quit()
+print("Quitting")
