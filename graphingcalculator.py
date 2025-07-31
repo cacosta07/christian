@@ -97,3 +97,4 @@ for i in range(x_clamp):
             print("▓▒", "<---",fN(mark_x),",",fN(y))
         else:
             print("▓▒")
+input("")
