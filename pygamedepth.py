@@ -37,42 +37,37 @@ clock = pygame.time.Clock()
 running = True
 
 def drawDepth():
+    global isDrawing
+    isDrawing = True
     xoffset = 0
     yoffset = 0
-    for offsetCount in range(4):
-        if offsetCount == 1:
-            xoffset += .5
-        if offsetCount == 2:
-            yoffset += .5
-        if offsetCount == 3:
-            xoffset -= .5
+    for screenx in range(round(width / resolution)):
+        x = ((screenx * resolution) / zoom) + xoffset
+        if screenx % ((resolution)*16):
+            pygame.display.update()
+        for screeny in range(round(height / resolution)):
+            y = ((screeny * resolution) / zoom) + yoffset
 
-            for screenx in range(round(width / resolution)):
-                x = ((screenx * resolution) / zoom) + xoffset
-                if screenx % ((resolution)**4):
-                    pygame.display.update()
-                for screeny in range(round(height / resolution)):
-                    y = ((screeny * resolution) / zoom) + yoffset
+            try:
+                ################
+                ################
 
-                    try:
-                        ################
-                        ################
+                depth = np.tan(x) + np.tan(y)
 
-                        depth = x/y
+                ################
+                ################
+                depthAdd += depth
+                if np.isnan(depthAdd):
+                    depthAdd = (np.sin(x/(12/zoom))*99999999) * (np.cos(y/(12/zoom))*99999999)
+            except:
+                depthAdd = (np.sin(x/(12/zoom))*99999999) * (np.cos(y/(12/zoom))*99999999)
 
-                        ################
-                        ################
-                        depthAdd += depth
-                        if np.isnan(depthAdd):
-                            depthAdd = (np.sin(x/4)*99999999) * (np.cos(y/4)*99999999)
-                    except:
-                        depthAdd = (np.sin(x/4)*99999999) * (np.cos(y/4)*99999999)
+            depthAdd /= 4
 
-                    depthAdd /= 4
+            depthOutput = [np.clip(depthAdd * brightness, 0, 255), np.clip(depthAdd * brightness, 0, 255), np.clip(depthAdd * brightness, 0, 255)]
 
-                    depthOutput = [np.clip(depthAdd * brightness, 0, 255), np.clip(depthAdd * brightness, 0, 255), np.clip(depthAdd * brightness, 0, 255)]
-
-                    pygame.draw.rect(screen, depthOutput, pygame.Rect(screenx * resolution, screeny * resolution, round(resolution * .8), round(resolution * .8)))
+            pygame.draw.rect(screen, depthOutput, pygame.Rect(screenx * resolution, screeny * resolution, round(resolution * .8), round(resolution * .8)))
+    isDrawing = False
 
 drawDepth()
 
@@ -80,21 +75,21 @@ while running:
     # Handle events
 
     keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_UP] or keys[pygame.K_w]:
-        brightness *= 2
-    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        brightness *= .5
-    if keys[pygame.K_LEFT] or keys[pygame.K_a] and resolution > 1:
-        resolution -= 1
-        screen.fill("#000000")
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        resolution += 1
-        screen.fill("#000000")
-    if keys[pygame.K_PLUS] or keys[pygame.K_e]:
-        zoom *= 2
-    if keys[pygame.K_MINUS] or keys[pygame.K_q]:
-        zoom *= .5
+    if not isDrawing:
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            brightness *= 2
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            brightness *= .5
+        if keys[pygame.K_LEFT] and resolution > 1 or keys[pygame.K_a] and resolution > 1:
+            resolution -= 1
+            screen.fill("#000000")
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            resolution += 1
+            screen.fill("#000000")
+        if keys[pygame.K_PLUS] or keys[pygame.K_e]:
+            zoom *= 2
+        if keys[pygame.K_MINUS] or keys[pygame.K_q]:
+            zoom *= .5
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
