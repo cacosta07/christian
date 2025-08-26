@@ -7,7 +7,6 @@ from sty import RgbFg, Style, fg, bg, ef, rs
 
 txt_sleep = .2
 
-
 def write(*args):
     for arg in args:
         for char in str(arg):
@@ -32,7 +31,6 @@ fg.brown = Style(RgbFg(110, 50, 20))
 #╘╞╟
 # ┤╟
 #█▓▒░
-
 
 def dayArt():
     instant("\n  " + fg.white + "☀︎" + fg.orange +
@@ -96,7 +94,6 @@ def jailArt():
     instant("▐██████████████████████████████████████▌")
     instant(rs.all + "\n")
 
-
 ### vars
 
 print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
@@ -151,7 +148,7 @@ write(
     "You are a wanted criminal, on the run from\nthe law after failing to rob a bank.\n"
 )
 write(
-    "You have to make it 20km away from the starting\nposition to find somewhere safe to stay.\n\n"
+    "You have to make it 20km away from the starting\nposition to find somewhere safe to stay.\n\n", player_position
 )
 write("The police are following you,")
 time.sleep(.5 * txt_sleep)
@@ -217,7 +214,7 @@ def check(typed):
         exit()
     if typed == "d":
         if alertness < 100:
-            alertness += 30 + (isInTown * 10) + (np.abs(isDay-1)*20)
+            alertness += 30 + (isInTown * 10) + (np.abs(isDay-1)*10)
             game_time += 2
             hunger -= random.randint(1, 3)
             thirst -= random.randint(2, 4)
@@ -431,13 +428,13 @@ def explore():
     if isInTown:
         write("\nExploring town... ")
         time.sleep(1 * txt_sleep)
-        plusfood = round((random.uniform(0, 10 * (exploretime))) / 30)
+        plusfood = round((random.uniform(0, 15 * (exploretime))) / 30)
         pluswater = round((random.uniform(0, 20 * (exploretime))) / 30)
         plusmoney = round((random.uniform(0, 10 * (exploretime))) / 10)
     else:
         write("\nExploring... ")
         time.sleep(1 * txt_sleep)
-        plusfood = round((random.uniform(0, 10 * (exploretime * 2))) / 20)
+        plusfood = round((random.uniform(0, 15 * (exploretime * 2))) / 20)
         pluswater = round((random.uniform(0, 20 * (exploretime * 2))) / 20)
         plusmoney = round((random.uniform(0, 15 * (exploretime))) / 10)
     police_position += police_advance * exploretime
@@ -456,6 +453,7 @@ def explore():
 
 events = [
     "trip", "foundfood", "foundwater", "robbed", "healthtonic", "trade", "rob",
+    "train",
     "town", "town", "town", "town", "town", "town"
 ]
 
@@ -523,16 +521,16 @@ def townShop():
                 write("You dont have enough money.\n")
         if typed == "f":
             if food >= 1:
-                money += 4
+                money += 5
                 food -= 1
-                write("You have sold food for 4$.\n")
+                write("You have sold food for 5$.\n")
             else:
                 write("You dont have any food to sell.\n")
         if typed == "g":
             if water >= 1:
-                money += 2
+                money += 3
                 water -= 1
-                write("You have sold water for 2$.\n")
+                write("You have sold water for 3$.\n")
             else:
                 write("You dont have any water to sell.\n")
         if typed == "h":
@@ -702,8 +700,11 @@ def jail():
                         money = 0
                         escapeChance = random.randint(2,10)
                         alertness -= 5
-                        jail()
-        jail()
+        if typed == "":
+            instant("Refreshing...\n")
+            jail()
+
+        checkJail(str.lower(input("Input: ")))
     if alertness >= 80:
         health += 5
 
@@ -739,7 +740,7 @@ def jail():
         health -= 10
         game_time += 4
         write(
-            bg.li_orange + fg.black +
+            bg.li_red + fg.black +
             "\nYou fall unconsious where you are and wake up 4 hours later. You are now ",
             alertness, "% alert.")
         print(rs.all + fg.li_red)
@@ -794,8 +795,6 @@ def jail():
 
 
 
-
-
 def event():
     global food
     global water
@@ -843,7 +842,7 @@ def event():
             write(".\n")
             time.sleep(1 * txt_sleep)
             write(
-                "You wake up dizzy behind a boulder next to your bag.\nYour head hurts, and your bag is empty... you were robbed."
+                "You wake up dizzy behind a boulder next to your bag.\nYour head hurts, and your bag is empty... you were robbed.\n"
             )
             food = 0
             water = 0
@@ -853,7 +852,7 @@ def event():
             money = 0
         if event == "healthtonic":
             write(
-                "You trip over something on the floor... its dusty and half-buried...\nits a full health tonic! You feel much better now."
+                "You trip over something on the floor... its dusty and half-buried...\nits a full health tonic! You feel much better now.\n"
             )
             health = 100
         if event == "trade":
@@ -863,16 +862,16 @@ def event():
             if str.lower(input("Give him food? y/n ")) == "y":
                 if food >= 1:
                     write(
-                        "The man thanks you and hands you two drinks in turn for one\nof your food items. He gives a smile and you carry on."
+                        "The man thanks you and hands you two drinks in turn for one\nof your food items. He gives a smile and you carry on.\n"
                     )
                     food -= 1
                     water += 2
                 else:
                     write(
-                        "You apologize to the man and carry on, as you have no food."
+                        "You apologize to the man and carry on, as you have no food.\n"
                     )
             else:
-                write("You ignore the man and carry on.")
+                write("You ignore the man and carry on.\n")
         if event == "rob":
             write(
                 "You see a wealthy looking man and his guard riding on a stagecoach.\n"
@@ -891,12 +890,14 @@ def event():
                     write(
                         "You rob the man successfully and run away with his money.\n"
                     )
-                    money += random.randint(30, 60)
+                    money += random.randint(30, 50)
+        if event == "train":
+            write("You hop on a train that stopped nearby, and it takes you a little\nwhile away but eventually stops again.")
+            player_position += 1200
 
         print("\n\n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         print(rs.all + fg.li_yellow)
         gamecheck()
-
 
 def tips():
     print(fg.white + "\n════════════════════ Tips ════════════════════\n")
@@ -922,7 +923,6 @@ def tips():
 
     print(fg.white + "\n══════════════════════════════════════════════\n" +
           fg.li_yellow)
-
 
 def menu():
     global isInTown
@@ -1003,7 +1003,5 @@ def menu():
 
     check(str.lower(input("Input: ")))
 
-
 txt_sleep = .5
-
 menu()
