@@ -434,7 +434,7 @@ def explore():
     else:
         write("\nExploring... ")
         time.sleep(1 * txt_sleep)
-        plusfood = round((random.uniform(0, 15 * (exploretime * 2))) / 20)
+        plusfood = round((random.uniform(0, 10 * (exploretime * 3))) / 20)
         pluswater = round((random.uniform(0, 20 * (exploretime * 2))) / 20)
         plusmoney = round((random.uniform(0, 15 * (exploretime))) / 10)
     police_position += police_advance * exploretime
